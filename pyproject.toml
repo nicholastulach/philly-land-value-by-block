@@ -1,12 +1,13 @@
 [tool.poetry]
-name = "opa"
+name = "philly-land-value-by-block"
 version = "0.1.0"
 description = ""
-authors = ["nkt <nicholas.tulach@voteshield.us>"]
+authors = ["nicholas tulach <nkt@me.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
 pandas = "^1.4.2"
+geopandas = "^0.10.2"
 black = "^22.3.0"
 
 [tool.poetry.dev-dependencies]
