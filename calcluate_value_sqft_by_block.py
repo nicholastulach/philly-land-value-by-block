@@ -70,3 +70,6 @@ df = pd.merge(
 df["value_sqft_diff_mean"] = df["value_sqft"] - df["value_sqft_mean"]
 
 df.to_csv("data/output.csv", index=None)
+df[[
+    "objectid", "value_sqft", "value_sqft_mean", "value_sqft_diff_mean"
+]].to_csv("data/output_metrics_only.csv", index=None)
