@@ -42,6 +42,7 @@ df = df[
 # Compute the value per square foot for both the exempt and taxable land area
 df["value_sqft"] = (df["taxable_land"] + df["exempt_land"]) / df["total_area"]
 
+# Remove rows with empty `value_sqft`. They are meaningless.
 df = df[pd.notnull(df["value_sqft"])]
 
 # Calcluate the aggregate count, mean, standard deviation, and range for each
