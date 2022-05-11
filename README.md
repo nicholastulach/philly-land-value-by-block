@@ -12,7 +12,7 @@ Generates some basic statistics (normalized land values) for property assessment
 ## Instructions
 1. Clone this repo to your local machine.
 2. Run `poetry shell` from the project folder.
-3. Download the OPA properties CSV from Open Data Philly.
+3. Download the OPA properties CSV from Open Data Philly. Put the source file in the `data` directory.
 4. Execute the script: `python calcluate_value_sqft_by_block.py`
-5. Open the results file: `land_value_sqft_by_block.csv`
+5. Generates three results files: `output.csv`, `output_groups.csv`, and `output_metrics_only.csv`
 6. Play around with the data!
