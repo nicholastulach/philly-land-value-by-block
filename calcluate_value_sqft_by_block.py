@@ -1,16 +1,31 @@
 import pandas as pd
 
 df = pd.read_csv(
-    "opa_properties_public.csv",
+    "data/opa_properties_public.csv",
+    dtype={"suffix": "str", "year_built": "str"},
     usecols=[
-        "exempt_land",
-        "house_number",
         "objectid",
+        "assessment_date",
+        "census_tract",
+        "exempt_building",
+        "exempt_land",
+        "geographic_ward",
+        "house_number",
+        "state_code",
+        "street_code",
         "street_designation",
         "street_direction",
         "street_name",
+        "suffix",
+        "taxable_building",
         "taxable_land",
         "total_area",
+        "total_livable_area",
+        "year_built",
+        "year_built_estimate",
+        "zip_code",
+        "lat",
+        "lng",
     ],
 )
 
@@ -25,17 +40,32 @@ df = df[
 ]
 
 # Compute the value per square foot for both the exempt and taxable land area
-df["value_per_sqft"] = (df["taxable_land"] + df["exempt_land"]) / df["total_area"]
+df["value_sqft"] = (df["taxable_land"] + df["exempt_land"]) / df["total_area"]
+
+df = df[pd.notnull(df["value_sqft"])]
 
 # Calcluate the aggregate count, mean, standard deviation, and range for each
 # block
-df = df.groupby(
+dfg = df.groupby(
     ["street_direction", "street_name", "street_designation", "block"], dropna=False
-)[["value_per_sqft"]].agg(
-    count=("value_per_sqft", "count"),
-    value_sqft_mean=("value_per_sqft", "mean"),
-    value_sqft_std=("value_per_sqft", "std"),
-    value_sqft_range=("value_per_sqft", lambda x: x.max() - x.min()),
+)[["value_sqft"]].agg(
+    count=("value_sqft", "count"),
+    value_sqft_mean=("value_sqft", "mean"),
+    value_sqft_std=("value_sqft", "std"),
+    value_sqft_range=("value_sqft", lambda x: x.max() - x.min()),
+)
+dfg = dfg.reset_index()
+dfg.to_csv("data/output_groups.csv", index=None)
+
+# Merge the data back into the original dataframe
+df = pd.merge(
+    df,
+    dfg,
+    on=["street_direction", "street_name", "street_designation", "block"],
+    how="left",
 )
 
-df.reset_index().to_csv("land_value_sqft_by_block.csv", index=None)
+# Calculate the difference from the mean
+df["value_sqft_diff_mean"] = df["value_sqft"] - df["value_sqft_mean"]
+
+df.to_csv("data/output.csv", index=None)
